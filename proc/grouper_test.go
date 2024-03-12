@@ -52,9 +52,9 @@ func TestGrouperBasic(t *testing.T) {
 			},
 			GroupByName{
 				"g1": Group{Counts{}, States{Other: 1}, msi{}, 1, Memory{7, 8, 0, 0, 0}, starttime,
-					4, 0.01, 2, nil},
+					4, 0.01, 2, nil, false},
 				"g2": Group{Counts{}, States{Waiting: 1}, msi{}, 1, Memory{8, 9, 0, 0, 0}, starttime,
-					40, 0.1, 3, nil},
+					40, 0.1, 3, nil, true},
 			},
 		},
 		{
