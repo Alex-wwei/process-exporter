@@ -17,6 +17,7 @@ type (
 		tracker     *Tracker
 		threadAccum map[string]map[string]Threads
 		debug       bool
+		removeEmptyGroups bool
 	}
 
 	// GroupByName maps group name to group metrics.
@@ -49,12 +50,13 @@ type (
 func lessThreads(x, y Threads) bool { return seq.Compare(x, y) < 0 }
 
 // NewGrouper creates a grouper.
-func NewGrouper(namer common.MatchNamer, trackChildren, trackThreads, alwaysRecheck, debug bool) *Grouper {
+func NewGrouper(namer common.MatchNamer, trackChildren, trackThreads, alwaysRecheck, debug bool, removeEmptyGroups bool) *Grouper {
 	g := Grouper{
 		groupAccum:  make(map[string]Counts),
 		threadAccum: make(map[string]map[string]Threads),
 		tracker:     NewTracker(namer, trackChildren, alwaysRecheck, debug),
 		debug:       debug,
+		removeEmptyGroups: removeEmptyGroups,
 	}
 	return &g
 }
@@ -135,7 +137,11 @@ func (g *Grouper) groups(tracked []Update) GroupByName {
 	// Now add any groups that were observed in the past but aren't running now.
 	for gname, gcounts := range g.groupAccum {
 		if _, ok := groups[gname]; !ok {
-			groups[gname] = Group{Counts: gcounts}
+			if g.removeEmptyGroups {
+				delete(g.groupAccum, gname)
+			} else {
+				groups[gname] = Group{Counts: gcounts}
+			}
 		}
 	}
 
