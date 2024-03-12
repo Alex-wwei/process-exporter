@@ -176,6 +176,7 @@ func main() {
 			"log debugging information to stdout")
 		showVersion = flag.Bool("version", false,
 			"print version information and exit")
+		removeEmptyGroups = flag.Bool("remove-empty-groups", false, "forget process groups with no processes")
 	)
 	flag.Parse()
 
@@ -240,6 +241,7 @@ func main() {
 			Namer:       matchnamer,
 			Recheck:     *recheck,
 			Debug:       *debug,
+			RemoveEmptyGroups: *removeEmptyGroups,
 		},
 	)
 	if err != nil {
